@@ -5,6 +5,11 @@ jobs:
     runs-on: ubuntu-latest  
     steps:
       - uses: actions/checkout@v3 
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
       - name: Create SBOM with CycloneDX
         id: sbom
         uses: AppThreat/cdxgen-action@v1
