@@ -1,5 +1,25 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            cloud 'kubernetes'
+            yaml """
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  containers:
+                  - name: jnlp
+                    image: jenkins/inbound-agent:3107.v665000b_51092-15
+                    resources:
+                      limits:
+                        cpu: '1'
+                        memory: '2Gi'
+                      requests:
+                        cpu: '900m'
+                        memory: '1Gi'
+                    tty: true
+            """
+        }
+    }
 
     tools {
         nodejs "node"
@@ -26,7 +46,7 @@ pipeline {
         
         stage('Generate SBOM') {
             steps {
-                sh 'export FETCH_LICENSE=true && cdxgen -o bom.json'
+                sh 'export FETCH_LICENSE=true && cdxgen -r -o bom.json'
                 script {
                     def sbom = readFile('bom.json')
                     echo "Generated SBOM:\n$sbom"
