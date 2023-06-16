@@ -12,9 +12,9 @@ pipeline {
                     resources:
                       limits:
                         cpu: '1'
-                        memory: '2Gi'
+                        memory: '1Gi'
                       requests:
-                        cpu: '900m'
+                        cpu: '800m'
                         memory: '1Gi'
                     tty: true
             """
@@ -63,7 +63,7 @@ pipeline {
                     -H "X-Api-Key:${X_API_KEY}" \
                     -F "autoCreate=true" \
                     -F "projectName=Jenkinsreact" \
-                    -F "projectVersion=1.23" \
+                    -F "projectVersion=1.24" \
                     -F "bom=@bom.json"
                     """
                 }
