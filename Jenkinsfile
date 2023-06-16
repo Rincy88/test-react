@@ -7,12 +7,12 @@ pipeline {
                 kind: Pod
                 spec:
                   containers:
-                  - name: jnlp
+                  - name: node
                     image: jenkins/inbound-agent:3107.v665000b_51092-15
                     resources:
                       limits:
                         cpu: '1'
-                        memory: '1Gi'
+                        memory: '2Gi'
                       requests:
                         cpu: '800m'
                         memory: '1Gi'
