@@ -37,12 +37,16 @@ jobs:
           PROJECT_VERSION="1.0.0"
           
           # API request to retrieve the existing SBOM
-          existing_sbom=$(curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/project/$PROJECT_NAME/$PROJECT_VERSION")
+          existing_sbom=$(curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/fe75d8f5-24e0-4245-a64e-bfdcc62aaa0d?format=json&variant=withVulnerabilities&download=true")
           
-          # Combine the existing SBOM with the generated SBOM
-          aggregated_sbom="aggregated_sbom.json"
-          echo "$existing_sbom" > "$aggregated_sbom"
-          cat "bom.json" >> "$aggregated_sbom"
+          # Combine the existing SBOM with the generated SBOM 
+          #echo jq -s '.[0] * .[1]' bom.json existing_sbom.json > combined_sbom.json
+          echo '[' > combined_sbom.json
+          echo "$existing_sbom" >> combined_sbom.json
+          echo ',' >> combined_sbom.json
+          cat bom.json >> combined_sbom.json
+          echo ']' >> combined_sbom.json
+          cat combined_sbom.json
           
       - name: Upload aggregated SBOM to Dependency Track
         run: |
@@ -51,18 +55,21 @@ jobs:
           API_KEY="1DMIXAnGtTIeTQDddlHSvpj6d3as174S"
           
           # Project name and version
-          PROJECT_NAME="cs-backend1"
+          PROJECT_NAME="test-aggregate"
           PROJECT_VERSION="1.0.0"
           
           # API request to upload the aggregated SBOM to Dependency Track
-          response=$(curl -k -X POST "$API_ENDPOINT/bom" \
+          response=$(curl -k -X PUT "$API_ENDPOINT/bom" \
                      -H "Content-Type: multipart/form-data" \
                      -H "X-Api-Key: $API_KEY" \
                      -F "autoCreate=true" \
                      -F "projectName=$PROJECT_NAME" \
                      -F "projectVersion=$PROJECT_VERSION" \
-                     -F "bom=@aggregated_sbom.json")
+                     -F "bom=@combined_sbom.json")
                      
       - name: Cleanup
         run: |
           rm "bom.json" "aggregated_sbom.json"
+
+          
+     
