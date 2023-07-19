@@ -24,11 +24,8 @@ jobs:
       - name: Generate SBOM
         run: |
           export FETCH_LICENSE=true
-          npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json
-      
-      - name: Create upload path
-        run: mkdir -p path/to/sbom
-           
+          npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json 
+          
       - name: Retrieve existing SBOM
         run: |
           # Dependency Track API endpoint and API key
@@ -43,7 +40,7 @@ jobs:
           curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/fe75d8f5-24e0-4245-a64e-bfdcc62aaa0d?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
           
           # Combine the existing SBOM with the generated SBOM 
-          jq -s 'add' bom.json existing_sbom.json > path/to/sbom/combined_sbom.json
+          jq -s add bom.json <(cat existing_sbom.json) > combined_sbom.json
           #echo '[' > combined_sbom.json
           #echo "$existing_sbom" >> combined_sbom.json
           #echo ',' >> combined_sbom.json
@@ -54,7 +51,7 @@ jobs:
         with:
           # Artifact name
           name: Sbom
-          path:  path/to/sbom/combined_sbom.json
+          path: ./combined_sbom.json
           # The desired behavior if no files are found using the provided path. 
       - name: Upload aggregated SBOM to Dependency Track
         run: |
