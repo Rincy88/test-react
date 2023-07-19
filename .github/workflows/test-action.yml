@@ -52,7 +52,7 @@ jobs:
         run: |
           # Dependency Track API endpoint and API key
           API_ENDPOINT="https://dt-api.staging.cryptosoft.com/api/v1"
-          API_KEY="1DMIXAnGtTIeTQDddlHSvpj6d3as174S"
+          API_KEY="1DMIXAnGtTIeTQDddlHSvpj6d3as174S "
           
           # Project name and version
           PROJECT_NAME="test-aggregate"
@@ -65,11 +65,11 @@ jobs:
                      -F "autoCreate=true" \
                      -F "projectName=$PROJECT_NAME" \
                      -F "projectVersion=$PROJECT_VERSION" \
-                     -F "bom=@combined_sbom.json")
+                     -F "@combined_sbom.json")
                      
       - name: Cleanup
         run: |
-          rm "bom.json" "aggregated_sbom.json"
+          rm "bom.json" "combined_sbom.json"
 
           
      
