@@ -52,7 +52,7 @@ jobs:
           # Artifact name
           name: combined_sbom
           # Destination path
-          path: ./combined_sbom.json
+          path: combined_sbom.json
           
       - name: Upload aggregated SBOM to Dependency Track
         run: |
