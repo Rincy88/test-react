@@ -46,9 +46,8 @@ jobs:
           echo "$existing_sbom" >> combined_sbom.json
           echo ',' >> combined_sbom.json
           cat bom.json >> combined_sbom.json
-          echo ']' >> combined_sbom.json
-          cat combined_sbom.json
-          shell: bash
+          echo ']' >> combined_sbom.json 
+        shell: bash
       - name: Upload aggregated SBOM to Dependency Track
         run: |
           # Dependency Track API endpoint and API key
