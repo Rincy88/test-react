@@ -26,6 +26,7 @@ jobs:
           export FETCH_LICENSE=true
           npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json
           
+        shell: bash
       - name: Retrieve existing SBOM
         run: |
           # Dependency Track API endpoint and API key
@@ -47,7 +48,7 @@ jobs:
           cat bom.json >> combined_sbom.json
           echo ']' >> combined_sbom.json
           cat combined_sbom.json
-          
+          shell: bash
       - name: Upload aggregated SBOM to Dependency Track
         run: |
           # Dependency Track API endpoint and API key
@@ -66,6 +67,7 @@ jobs:
                      -F "projectName=$PROJECT_NAME" \
                      -F "projectVersion=$PROJECT_VERSION" \
                      -F "bom=@combined_sbom.json"
+           shell: bash
                      
       - name: Cleanup
         run: |
