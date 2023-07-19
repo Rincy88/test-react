@@ -59,13 +59,13 @@ jobs:
           PROJECT_VERSION="1.0.0"
           
           # API request to upload the aggregated SBOM to Dependency Track
-          response=$(curl -k -X PUT "$API_ENDPOINT/bom" \
+          curl -k -X POST "$API_ENDPOINT/bom" \
                      -H "Content-Type: multipart/form-data" \
                      -H "X-Api-Key: $API_KEY" \
                      -F "autoCreate=true" \
                      -F "projectName=$PROJECT_NAME" \
                      -F "projectVersion=$PROJECT_VERSION" \
-                     -F "@combined_sbom.json")
+                     -F "bom=@combined_sbom.json"
                      
       - name: Cleanup
         run: |
