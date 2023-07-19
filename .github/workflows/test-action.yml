@@ -40,7 +40,7 @@ jobs:
           existing_sbom=$(curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/fe75d8f5-24e0-4245-a64e-bfdcc62aaa0d?format=json&variant=withVulnerabilities&download=true")
           
           # Combine the existing SBOM with the generated SBOM 
-          jq -s 'add' bom.json existing_sbom > combined_sbom.json
+          jq -s 'add' bom.json <(echo "$existing_sbom") > combined_sbom.json
           #echo '[' > combined_sbom.json
           #echo "$existing_sbom" >> combined_sbom.json
           #echo ',' >> combined_sbom.json
