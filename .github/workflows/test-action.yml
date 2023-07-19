@@ -46,13 +46,20 @@ jobs:
           echo ',' >> combined_sbom.json
           cat bom.json >> combined_sbom.json
           echo ']' >> combined_sbom.json  
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          # Artifact name
+          name: Sbom
+          path: ./combined_sbom.json
+          # The desired behavior if no files are found using the provided path.
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.1
         with:
           # Artifact name
           name: combined_sbom
           # Destination path
-          path: combined_sbom.json
+          path: ./combined_sbom.json
           
       - name: Upload aggregated SBOM to Dependency Track
         run: |
