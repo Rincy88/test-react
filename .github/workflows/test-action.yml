@@ -30,13 +30,13 @@ jobs:
         run: | 
         
           # API request to retrieve the existing SBOM
-          curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/fe75d8f5-24e0-4245-a64e-bfdcc62aaa0d?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
+          #curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/fe75d8f5-24e0-4245-a64e-bfdcc62aaa0d?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
           
           # Read generated json
-          cat bom.json
+          #cat bom.json
           
           # Execute combine.js with the two JSON files as input
-          node combine.js bom.json existing_sbom.json
+          node combine.js bom.json
           
           # Combine the existing SBOM with the generated SBOM
           #jq -s add bom.json existing_sbom.json > combined_sbom.json 
@@ -46,19 +46,14 @@ jobs:
         with:
           # Artifact name
           name: Generated Sbom
-          path: bom.json
-      - name: Upload Existing sbom
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          # Artifact name
-          name: Existing Sbom
-          path: existing_sbom.json 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          # Artifact name
-          name: combined Sbom
-          path: combined.json 
+          path: converted_file.json
+          
+      - name: Read file and save content in a variable
+        id: read_file
+        run: |
+          encodedSbom=$(cat converted_file.json)
+          echo "File contents: $encodedSbom"
+          echo "::set-output name=encodedSbom::$encodedSbom"
           
       - name: Upload aggregated SBOM to Dependency Track
         run: |
@@ -70,18 +65,19 @@ jobs:
           # PROJECT_NAME="test-aggregate"
           # PROJECT_VERSION="1.0.0"
           
+          echo encodedBom > cat converted_file.json
           # API request to upload the aggregated SBOM to Dependency Track
-          curl -k -X POST "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
+          curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: multipart/form-data" \
                      -H "X-Api-Key: $API_KEY" \
-                     -F "autoCreate=true" \
-                     -F "projectName=test-aggregate" \
-                     -F "projectVersion=1.0.0" \
-                     -F "bom=@combined_sbom.json" 
+                     -d '{
+                        "project": "4f7c6c78-6c65-4a79-ae10-cd7461b3f7d9",
+                        "bom":${{ steps.read_file.outputs.encodedSbom}}
+                        }' 
                      
       - name: Cleanup
         run: |
-          rm "bom.json" "combined_sbom.json"
+          rm "bom.json" "converted_file.json"
 
           
      
