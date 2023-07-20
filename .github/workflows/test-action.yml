@@ -28,6 +28,9 @@ jobs:
           
       - name: Retrieve existing SBOM
         run: |
+          # Install jq if not already installed
+          sudo apt-get update -y
+          sudo apt-get install -y jq
           # Dependency Track API endpoint and API key
           API_ENDPOINT="https://dt-api.staging.cryptosoft.com/api/v1"
           API_KEY="1DMIXAnGtTIeTQDddlHSvpj6d3as174S"
