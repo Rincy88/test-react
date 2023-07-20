@@ -40,8 +40,8 @@ jobs:
           # API request to retrieve the existing SBOM
           curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/fe75d8f5-24e0-4245-a64e-bfdcc62aaa0d?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
           
-          # Read existing_sbom json
-          cat existing_sbom.json
+          # Read generated json
+          cat bom.json
           
           # Execute combine.js with the two JSON files as input
           node combine.js bom.json existing_sbom.json
