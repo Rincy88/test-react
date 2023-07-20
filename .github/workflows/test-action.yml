@@ -47,7 +47,7 @@ jobs:
                      -d @"$tmpfile"
       - name: Cleanup
         run: |
-          rm "bom.json" "$tmpfile"
+          rm "bom.json" 
 
           
      
