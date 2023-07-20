@@ -41,16 +41,12 @@ jobs:
           
           # API request to retrieve the existing SBOM
           curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/fe75d8f5-24e0-4245-a64e-bfdcc62aaa0d?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
-          
-           # Read the contents of file1.json and file2.json
-          content1=$(<bom.json)
-          content2=$(<existing_sbom.json)
-
-          # Combine the JSON files using jq and the keys
-          combined_json=$(jq -n 'reduce inputs as $item ({}; . + $item) | del(.null)' <<< "$content1" "$content2")
-
+   
+          # Execute combine.js with the two JSON files as input
+          node combine.js bom.json existing_sbom.json
+         
           # Save the combined JSON in a new file
-          echo "$combined_json" > combined.json
+          #echo "$combined_json" > combined.json
           # Combine the existing SBOM with the generated SBOM
           #jq -s add bom.json existing_sbom.json > combined_sbom.json
           #echo '[' > combined_sbom.json
@@ -63,7 +59,7 @@ jobs:
         with:
           # Artifact name
           name: Sbom
-          path: ./combined_sbom.json
+          path: combined.json
           # The desired behavior if no files are found using the provided path. 
       - name: Upload aggregated SBOM to Dependency Track
         run: |
