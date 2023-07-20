@@ -35,7 +35,8 @@ jobs:
           tmpfile=$(mktemp)
           cat << EOF > "$tmpfile"
           {
-            "project": "4f7c6c78-6c65-4a79-ae10-cd7461b3f7d9",
+            "projectName":"cryptosoft1",
+            "projectVersion":"1.0.0",
             "bom": "$encodedSbom"
           }
           EOF
