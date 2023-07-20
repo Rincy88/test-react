@@ -27,16 +27,8 @@ jobs:
           npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json 
           
       - name: Retrieve existing SBOM
-        run: |
-          
-          # Dependency Track API endpoint and API key
-          API_ENDPOINT="https://dt-api.staging.cryptosoft.com/api/v1"
-          API_KEY="1DMIXAnGtTIeTQDddlHSvpj6d3as174S"
-          
-          # Project name and version
-          PROJECT_NAME="cs-backend1"
-          PROJECT_VERSION="1.0.0"
-          
+        run: | 
+        
           # API request to retrieve the existing SBOM
           curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/fe75d8f5-24e0-4245-a64e-bfdcc62aaa0d?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
           
@@ -45,16 +37,10 @@ jobs:
           
           # Execute combine.js with the two JSON files as input
           node combine.js bom.json existing_sbom.json
-         
-          # Save the combined JSON in a new file
-          #echo "$combined_json" > combined.json
+          
           # Combine the existing SBOM with the generated SBOM
-          #jq -s add bom.json existing_sbom.json > combined_sbom.json
-          #echo '[' > combined_sbom.json
-          #echo "$existing_sbom" >> combined_sbom.json
-          #echo ',' >> combined_sbom.json
-          #cat bom.json >> combined_sbom.json
-          #echo ']' >> combined_sbom.json  
+          #jq -s add bom.json existing_sbom.json > combined_sbom.json 
+          
       - name: Upload Generated sbom
         uses: actions/upload-artifact@v3.1.2
         with:
@@ -72,8 +58,8 @@ jobs:
         with:
           # Artifact name
           name: combined Sbom
-          path: combined.json
-          # The desired behavior if no files are found using the provided path. 
+          path: combined.json 
+          
       - name: Upload aggregated SBOM to Dependency Track
         run: |
           # Dependency Track API endpoint and API key
