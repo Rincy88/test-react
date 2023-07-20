@@ -28,8 +28,6 @@ jobs:
     
       - name: Upload aggregated SBOM to Dependency Track
         run: | 
-          
-          echo encodedBom > cat converted_file.json
           # API request to upload the aggregated SBOM to Dependency Track
           curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: multipart/form-data" \
@@ -41,7 +39,7 @@ jobs:
                      
       - name: Cleanup
         run: |
-          rm "bom.json" "converted_file.json"
+          rm "bom.json" 
 
           
      
