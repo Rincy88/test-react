@@ -31,7 +31,7 @@ jobs:
           # API request to upload the aggregated SBOM to Dependency Track
           curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: multipart/form-data" \
-                     -H "X-Api-Key: $API_KEY" \
+                     -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S " \
                      -d '{
                         "project": "4f7c6c78-6c65-4a79-ae10-cd7461b3f7d9",
                         "bom":"$(jq . bom.json | base64)"
