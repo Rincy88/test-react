@@ -34,7 +34,7 @@ jobs:
                      -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S " \
                      -d '{
                         "project": "4f7c6c78-6c65-4a79-ae10-cd7461b3f7d9",
-                        "bom":"$(jq . bom.json | base64)"
+                        "bom":$(jq -c . bom.json | base64)
                         }' 
                      
       - name: Cleanup
