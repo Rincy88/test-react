@@ -50,10 +50,12 @@ jobs:
           EOF
         
                 # API request to upload the file to Dependency Track using --form 
-                 curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
+                 response=$(curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: application/json" \
                      -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S " \
-                     -d @"$payloadfile"
+                     -d @"$payloadfile")
+                 # Print the response for each SBOM
+                echo "$response"
             done
 
       - name: Cleanup
