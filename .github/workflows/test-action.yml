@@ -35,7 +35,7 @@ jobs:
           # Base64 encode the generated SBOM content
           #encodedSbom=$(jq -c . bom.json | base64)
           
-          files=("bom.json" "existing_sbom.json")
+          files=("bom.json" "bom.json")
           
            for file in "${files[@]}"; do
                 # API request to upload the file to Dependency Track using --form
