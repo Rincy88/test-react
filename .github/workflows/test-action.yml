@@ -36,7 +36,7 @@ jobs:
           payload= 
           {
             "project":"58fc3071-c47c-4bcc-8167-b0045ee7f6e2", 
-            "bom": "$encodedSbom"
+            "bom": cat "$encodedSbom"
           } 
           # API request to upload the aggregated SBOM to Dependency Track
           curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
