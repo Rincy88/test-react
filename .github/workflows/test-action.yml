@@ -28,7 +28,7 @@ jobs:
           
       - name: Get SBOM of the existing project
         run: |
-          curl -k -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/fba1e673-92eb-4e7a-a80c-c76be8200221" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
+          curl -k -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/58fc3071-c47c-4bcc-8167-b0045ee7f6e2" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
     
       - name: Upload aggregated SBOM to Dependency Track
         run: | 
@@ -44,14 +44,14 @@ jobs:
                  payloadfile=$(mktemp)
                   cat << EOF > "$payloadfile"
                   {
-                    "project": "fba1e673-92eb-4e7a-a80c-c76be8200221",
+                    "project": "58fc3071-c47c-4bcc-8167-b0045ee7f6e2",
                     "bom": "$encoded_sbom"
                   }
           EOF
         
                 # API request to upload the file to Dependency Track using --form 
                 
-               curl -ks -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
+               curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: application/json" \
                      -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S " \
                      -d @"$payloadfile" 
