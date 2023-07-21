@@ -35,7 +35,7 @@ jobs:
           payloadfile=$(mktemp)
           cat << EOF > "$payloadfile"
           {
-            "project":"58fc3071-c47c-4bcc-8167-b0045ee7f6e2", 
+            "project":"2935e720-6ef0-4210-8c65-3442b88a0c00", 
             "bom": "$encodedSbom"
           }
           EOF
