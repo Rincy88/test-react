@@ -48,11 +48,15 @@ jobs:
                 "project": "58fc3071-c47c-4bcc-8167-b0045ee7f6e2",
                 "bom": "'"$encodedData"'"
               }'
+              
+            # Save the payload to the temporary file
+           echo "$payload" > "$payloadfile"
+           
             # API request to upload the aggregated SBOM to Dependency Track
             curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                        -H "Content-Type: application/json" \
-                       -H "X-Api-Key:${API-KEY}" \
-                       -d "$payload"
+                       -H "X-Api-Key:1DMIXAnGtTIeTQDddlHSvpj6d3as174S" \
+                       --data-binary "@$payloadfile"
           done
 
       - name: Cleanup
