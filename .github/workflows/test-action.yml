@@ -28,7 +28,7 @@ jobs:
           
       - name: Get SBOM of the existing project
         run: |
-          curl -sk -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/58fc3071-c47c-4bcc-8167-b0045ee7f6e2" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
+          curl -k -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/58fc3071-c47c-4bcc-8167-b0045ee7f6e2" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
     
       - name: Upload aggregated SBOM to Dependency Track
         run: | 
