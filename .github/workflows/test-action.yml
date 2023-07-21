@@ -25,26 +25,36 @@ jobs:
         run: |
           export FETCH_LICENSE=true
           npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json 
+          
+      - name: Get SBOM of the existing project
+        run: |
+          existing_sbom=$(curl -sk -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/58fc3071-c47c-4bcc-8167-b0045ee7f6e2" -H "X-Api-Key: ${1DMIXAnGtTIeTQDddlHSvpj6d3as174S}")
     
+      - name: Convert existing SBOM to encoded data
+        run: |
+          # Base64 encode the existing SBOM content
+          encodedExistingSbom=$(echo "$existing_sbom" | base64)
+          
       - name: Upload aggregated SBOM to Dependency Track
         run: | 
-          # Base64 encode the JSON content
+          # Base64 encode the generated SBOM content
           encodedSbom=$(jq -c . bom.json | base64)
 
-          # Create a temporary file to store the JSON payload
-          payloadfile=$(mktemp)
-          payload='{
-              "project": "58fc3071-c47c-4bcc-8167-b0045ee7f6e2",
-              "bom": "'"$encodedSbom"'"
-            }'
-          # API request to upload the aggregated SBOM to Dependency Track
-          curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
-                     -H "Content-Type: application/json" \
-                     -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S " \
-                     -d "$payload"
+          # Loop through the existing SBOM and encoded SBOM
+          for encodedData in "$encodedExistingSbom" "$encodedSbom"; do
+            # Create a temporary file to store the JSON payload
+            payloadfile=$(mktemp)
+            payload='{
+                "project": "58fc3071-c47c-4bcc-8167-b0045ee7f6e2",
+                "bom": "'"$encodedData"'"
+              }'
+            # API request to upload the aggregated SBOM to Dependency Track
+            curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
+                       -H "Content-Type: application/json" \
+                       -H "X-Api-Key:${API-KEY}" \
+                       -d "$payload"
+          done
+
       - name: Cleanup
         run: |
-          rm "bom.json" 
-
-          
-     
+          rm "bom.json"
