@@ -47,13 +47,13 @@ jobs:
                     "project": "58fc3071-c47c-4bcc-8167"
                     "bom": "$encoded_sbom"
                   }
-                  EOF
+          EOF
         
                 # API request to upload the file to Dependency Track using --form
                 curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: application/json" \
                      -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" \ 
-                     -d @"$payloadfile"
+                     --data-binary "@$payloadfile"
             done
 
       - name: Cleanup
