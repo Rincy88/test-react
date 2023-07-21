@@ -32,10 +32,10 @@ jobs:
           encodedSbom=$(jq -c . bom.json | base64)
 
           # Create a temporary file to store the JSON payload
-          tmpfile=$(mktemp)
-          cat << EOF > "$tmpfile"
+          payloadfile=$(mktemp)
+          cat << EOF > "$payloadfile"
           {
-            "projectName":"cryptosoft1",
+            "projectName":"cryptosoft",
             "projectVersion":"1.0.0",
             "bom": "$encodedSbom"
           }
@@ -44,7 +44,7 @@ jobs:
           curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: application/json" \
                      -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S " \
-                     -d @"$tmpfile"
+                     -d @"$payloadfile"
       - name: Cleanup
         run: |
           rm "bom.json" 
