@@ -28,36 +28,27 @@ jobs:
           
       - name: Get SBOM of the existing project
         run: |
-          existing_sbom=$(curl -sk -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/58fc3071-c47c-4bcc-8167-b0045ee7f6e2" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S")
+          curl -sk -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/58fc3071-c47c-4bcc-8167-b0045ee7f6e2" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
     
       - name: Convert existing SBOM to encoded data
-        run: |
+        #run: |
           # Base64 encode the existing SBOM content
-          encodedExistingSbom=$(echo "$existing_sbom" | base64)
+          #encodedExistingSbom=$(echo "$existing_sbom" | base64)
           
       - name: Upload aggregated SBOM to Dependency Track
         run: | 
           # Base64 encode the generated SBOM content
-          encodedSbom=$(jq -c . bom.json | base64)
-
-          # Loop through the existing SBOM and encoded SBOM
-          for encodedData in "$encodedExistingSbom" "$encodedSbom"; do
-            # Create a temporary file to store the JSON payload
-            payloadfile=$(mktemp)
-            payload='{
-                "project": "58fc3071-c47c-4bcc-8167-b0045ee7f6e2",
-                "bom": "'"$encodedData"'"
-              }'
-              
-            # Save the payload to the temporary file
-           echo "$payload" > "$payloadfile"
-           
-            # API request to upload the aggregated SBOM to Dependency Track
-            curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
-                       -H "Content-Type: application/json" \
-                       -H "X-Api-Key:1DMIXAnGtTIeTQDddlHSvpj6d3as174S" \
-                       --data-binary "@$payloadfile"
-          done
+          #encodedSbom=$(jq -c . bom.json | base64)
+          
+          files=("bom.json" "existing_sbom.json")
+          
+           for file in "${files[@]}"; do
+                # API request to upload the file to Dependency Track using --form
+                curl -k -X POST "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
+                     -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" \
+                     -F "project=58fc3071-c47c-4bcc-8167-b0045ee7f6e2" \
+                     -F "bom=@$file"
+            done
 
       - name: Cleanup
         run: |
