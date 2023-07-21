@@ -28,7 +28,7 @@ jobs:
           
       - name: Get SBOM of the existing project
         run: |
-          curl -k -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/9c96fef8-2342-4302-a102-889cecfa2943" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
+          curl -k -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/fba1e673-92eb-4e7a-a80c-c76be8200221" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
     
       - name: Upload aggregated SBOM to Dependency Track
         run: | 
@@ -44,7 +44,7 @@ jobs:
                  payloadfile=$(mktemp)
                   cat << EOF > "$payloadfile"
                   {
-                    "project": "2619c08a-481d-45bd-8b9e-f40a7f261834",
+                    "project": "fba1e673-92eb-4e7a-a80c-c76be8200221",
                     "bom": "$encoded_sbom"
                   }
           EOF
@@ -56,6 +56,8 @@ jobs:
                      -d @"$payloadfile")
                  # Print the response for each SBOM
                 echo "$response"
+                 # Add a newline after each API response
+                echo
             done
 
       - name: Cleanup
