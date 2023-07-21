@@ -44,7 +44,7 @@ jobs:
                  payloadfile=$(mktemp)
                   cat << EOF > "$payloadfile"
                   {
-                    "project": "58fc3071-c47c-4bcc-8167"
+                    "project": "2619c08a-481d-45bd-8b9e-f40a7f261834"
                     "bom": "$encoded_sbom"
                   }
           EOF
@@ -53,7 +53,7 @@ jobs:
                 curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: application/json" \
                      -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" \ 
-                     --data-binary "@$payloadfile"
+                     -d @"$payloadfile"
             done
 
       - name: Cleanup
