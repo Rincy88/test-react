@@ -28,18 +28,23 @@ jobs:
           
       - name: Get SBOM of the existing project
         run: |
-          curl -k -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/58fc3071-c47c-4bcc-8167-b0045ee7f6e2" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
+          curl -k -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/9c96fef8-2342-4302-a102-889cecfa2943" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
     
       - name: Upload aggregated SBOM to Dependency Track
         run: | 
           # Base64 encode the generated SBOM content
-          #encodedSbom=$(jq -c . bom.json | base64)
+          #encodedSbom1=$(jq -c . bom.json | base64)
+          #encodedSbom2=$(jq -c . existing_sbom.json | base64)
           
-          files=("bom.json" "bom.json")
+          # Array of encoded SBOMs
+          files=("bom.json" "existing_sbom.json")
           
            for file in "${files[@]}"; do
+                 encoded_sbom=$(jq -c . "$file" | base64)
+                 payload='{"project": "58fc3071-c47c-4bcc-8167", "encodedsbom": "'"$encoded_sbom"'"}'
+        
                 # API request to upload the file to Dependency Track using --form
-                curl -k -X POST "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
+                curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" \
                      -F "project=58fc3071-c47c-4bcc-8167-b0045ee7f6e2" \
                      -F "bom=@$file"
