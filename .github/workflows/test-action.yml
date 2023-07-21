@@ -30,11 +30,6 @@ jobs:
         run: |
           curl -sk -X GET "https://dt-api.staging.cryptosoft.com/api/v1/bom/project/58fc3071-c47c-4bcc-8167-b0045ee7f6e2" -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" > existing_sbom.json
     
-      - name: Convert existing SBOM to encoded data
-        #run: |
-          # Base64 encode the existing SBOM content
-          #encodedExistingSbom=$(echo "$existing_sbom" | base64)
-          
       - name: Upload aggregated SBOM to Dependency Track
         run: | 
           # Base64 encode the generated SBOM content
