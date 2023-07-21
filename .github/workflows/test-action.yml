@@ -33,17 +33,16 @@ jobs:
 
           # Create a temporary file to store the JSON payload
           payloadfile=$(mktemp)
-          cat << EOF > "$payloadfile"
+          payload= 
           {
-            "project":"2935e720-6ef0-4210-8c65-3442b88a0c00", 
+            "project":"58fc3071-c47c-4bcc-8167-b0045ee7f6e2", 
             "bom": "$encodedSbom"
-          }
-          EOF
+          } 
           # API request to upload the aggregated SBOM to Dependency Track
           curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
                      -H "Content-Type: application/json" \
                      -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S " \
-                     -d @"$payloadfile"
+                     -d "$payload"
       - name: Cleanup
         run: |
           rm "bom.json" 
