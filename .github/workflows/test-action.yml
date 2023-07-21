@@ -35,7 +35,7 @@ jobs:
           payloadfile=$(mktemp)
           cat << EOF > "$payloadfile"
           {
-            "projectName":"test-cs-chain-api",
+            "projectName":"cryptosoft",
             "projectVersion":"1.0.0",
             "bom": "$encodedSbom"
           }
