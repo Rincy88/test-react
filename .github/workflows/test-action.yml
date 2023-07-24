@@ -23,8 +23,29 @@ jobs:
         run: |
           export FETCH_LICENSE=true
           npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json
+      
+      - name: Get SBOM using Project UUID
+        run: |  
+          API_ENDPOINT="https://dt-api.staging.cryptosoft.com/api/v1/project/lookup"
+          API_KEY=""
+          PROJECT_NAME="test"
+          PROJECT_VERSION="1.0.0" 
+          QUERY_STRING="name=$PROJECT_NAME&version=$PROJECT_VERSION"
+ 
+          response=$(curl -s -X GET "$API_ENDPOINT?$QUERY_STRING" -H "X-Api-Key: $API_KEY")
+          uuid=$(echo "$response" | jq -r '.uuid')
+ 
+          if [[ -z "$uuid" ]]; then 
+              uuid=""
+              touch existing_sbom.json
+          else
+          # API request to retrieve the existing SBOM
+          curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
+          fi
 
-      - name: Retrieve existing SBOM
+          echo "UUID: $uuid"
+ 
+      - name: Check the project and Retrieve existing SBOM
         id: get_sbom
         run: |
           # Dependency Track API endpoint and API key
@@ -35,9 +56,7 @@ jobs:
           PROJECT_NAME="cs-backend1"
           PROJECT_VERSION="1.0.0"
 
-          # API request to retrieve the existing SBOM
-          curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/576b8ef2-76c6-4b45-a40b-16cda19cd820?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
-
+     
       - name: Combine SBOMs
         run: |
           jq -s 'def deepmerge(a;b):
@@ -52,27 +71,7 @@ jobs:
                 end)
               );
             deepmerge({}; .)' bom.json existing_sbom.json > aggregated_sbom.json
-            
-          
-          #jq -s 'def deepmerge(a; b):
-          #reduce b[] as $item (a;
-            #reduce ($item | keys_unsorted[]) as $key (.;
-             # $item[$key] as $val | ($val | type) as $type | 
-              #.[$key] = if ($type == "object") then
-               # if ($key == "name" and .[$key] != $val) then
-                #  [., $item]
-                #else
-                 # deepmerge({}; [if .[$key] == null then {} else .[$key] end, $val])
-                #end
-              #elif ($type == "array") then
-               # (.[$key] + $val | unique)
-              #else
-               # $val
-              #end)
-            #);
-          #deepmerge({}; .)'  bom.json existing_sbom.json > aggregated_sbom.json
-            
-      
+                  
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
@@ -92,7 +91,8 @@ jobs:
           payloadfile=$(mktemp)
           cat << EOF > "$payloadfile"
           {
-            "project": "576b8ef2-76c6-4b45-a40b-16cda19cd820",
+            "project": "${uuid}",
+            "autoCreate":true,
             "bom": "$encoded_sbom"
           }
           EOF
