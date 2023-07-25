@@ -39,8 +39,8 @@ jobs:
               uuid=""
               touch existing_sbom.json
           else
-          # API request to retrieve the existing SBOM
-          curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
+              # API request to retrieve the existing SBOM
+              curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
           fi
 
           echo "UUID: $uuid" 
