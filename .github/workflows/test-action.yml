@@ -41,7 +41,7 @@ jobs:
 
           response=$(curl -k -X GET  -H "X-Api-Key: $API_KEY" "$API_ENDPOINT?name=$PROJECT_NAME&version=$PROJECT_VERSION")
           #echo "$response"
-          #uuid=$(echo "$response" | jq -r '.uuid')
+          uuid=$(echo "$response" | jq -r '.uuid')
           
           if echo "$response" | jq -e '.uuid' > /dev/null; then 
           uuid=$(echo "$response" | jq -r '.uuid')
