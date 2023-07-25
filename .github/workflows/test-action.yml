@@ -22,7 +22,7 @@ jobs:
       - name: Generate SBOM
         run: |
           export FETCH_LICENSE=true
-          npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json
+          npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json| jq '.'
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
@@ -46,7 +46,7 @@ jobs:
           if echo "$response" | jq -e '.uuid' > /dev/null; then 
           uuid=$(echo "$response" | jq -r '.uuid')
           # API request to retrieve the existing SBOM
-          curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
+          curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json| jq '.'
           else
               uuid=""
               touch existing_sbom.json
