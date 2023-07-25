@@ -49,7 +49,7 @@ jobs:
           curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json| jq '.'
           else
               uuid=""
-              touch existing_sbom.json
+               echo '{}' > existing_sbom.json
           fi 
       
       - name: Upload a Build Artifact
