@@ -40,16 +40,16 @@ jobs:
           QUERY_STRING="name=$PROJECT_NAME&version=$PROJECT_VERSION"
 
           response=$(curl -k -X GET  -H "X-Api-Key: $API_KEY" "$API_ENDPOINT?name=$PROJECT_NAME&version=$PROJECT_VERSION")
-          #echo "$response"
-          echo "$response" | jq -r '.uuid'
           
           if echo "$response" | jq -e '.uuid' > /dev/null; then 
           uuid=$(echo "$response" | jq -r '.uuid')
+          echo "UUID: $uuid" 
           # API request to retrieve the existing SBOM
           curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json| jq '.'
           else
               uuid=""
                echo '{}' > existing_sbom.json
+               echo "UUID: $uuid" 
           fi 
       
       - name: Upload a Build Artifact
