@@ -1,4 +1,4 @@
-name: Combine SBOMs and Upload to Dependency Track
+name: Combine SBOMs and Upload to Dependency Track.
 
 on:
   push: 
@@ -23,12 +23,19 @@ jobs:
         run: |
           export FETCH_LICENSE=true
           npm install -g @cyclonedx/cdxgen@8.6.0 && cdxgen -r -o bom.json
+          
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          # Artifact name
+          name: Generated sbom
+          path: ./bom.json
       
       - name: Get SBOM using Project UUID
         run: |  
           API_ENDPOINT="https://dt-api.staging.cryptosoft.com/api/v1/project/lookup"
           API_KEY="1DMIXAnGtTIeTQDddlHSvpj6d3as174S"
-          PROJECT_NAME="test"
+          PROJECT_NAME="test1"
           PROJECT_VERSION="1.0.0" 
           QUERY_STRING="name=$PROJECT_NAME&version=$PROJECT_VERSION"
 
@@ -44,20 +51,27 @@ jobs:
               uuid=""
               touch existing_sbom.json
           fi 
+      
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          # Artifact name
+          name: Existing sbom
+          path: ./existing_sbom.json
           
       - name: Combine SBOMs
         run: |
-          jq -s 'def deepmerge(a;b):
-           reduce b[] as $item (a;
-              reduce ($item | keys_unsorted[]) as $key (.;
-                $item[$key] as $val | ($val | type) as $type | .[$key] = if ($type == "object") then
-                  deepmerge({}; [if .[$key] == null then {} else .[$key] end, $val])
-                elif ($type == "array") then
-                 (.[$key] + $val | unique)
-                else
-                  $val
-                end)
-              );
+            jq -s 'def deepmerge(a;b):
+             reduce b[] as $item (a;
+                reduce ($item | keys_unsorted[]) as $key (.;
+                  $item[$key] as $val | ($val | type) as $type | .[$key] = if ($type == "object") then
+                    deepmerge({}; [if .[$key] == null then {} else .[$key] end, $val])
+                  elif ($type == "array") then
+                   (.[$key] + $val | unique)
+                  else
+                    $val
+                  end)
+                );
             deepmerge({}; .)' bom.json existing_sbom.json > aggregated_sbom.json
                   
       - name: Upload a Build Artifact
