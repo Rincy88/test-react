@@ -43,20 +43,8 @@ jobs:
           else
               uuid=""
               touch existing_sbom.json
-          fi
-
-
-          #if [[ -z "$uuid" ]]; then 
-          #    uuid=""
-           # touch existing_sbom.json
-          #else
-            # API request to retrieve the existing SBOM
-           # curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/$uuid?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
-          #fi
-
-          #echo "UUID: $uuid" 
-
-     
+          fi 
+          
       - name: Combine SBOMs
         run: |
           jq -s 'def deepmerge(a;b):
@@ -86,8 +74,8 @@ jobs:
           encoded_sbom=$(jq -c . aggregated_sbom.json | base64 | tr -d '\n')
           payloadfile=$(mktemp)
           
-          if [[ -z "$uuid" ]]; then 
-             cat << EOF > "$payloadfile"
+            if [[ -z "$uuid" ]]; then 
+              cat << EOF > "$payloadfile"
           {
             "projectName": "${PROJECT_NAME}",
             "projectVersion": "${PROJECT_VERSION}",
@@ -95,15 +83,15 @@ jobs:
             "bom": "$encoded_sbom"
           }
           EOF
-          else
-          cat << EOF > "$payloadfile"
+            else
+              cat << EOF > "$payloadfile"
           {
             "project": "${uuid}",
             "autoCreate":true,
             "bom": "$encoded_sbom"
           }
           EOF
-          fi
+            fi
 
           #cat << EOF > "$payloadfile"
           #{
