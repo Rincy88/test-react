@@ -31,19 +31,20 @@ jobs:
           PROJECT_NAME="test"
           PROJECT_VERSION="1.0.0" 
           QUERY_STRING="name=$PROJECT_NAME&version=$PROJECT_VERSION"
- 
+
           response=$(curl -k -X GET "$API_ENDPOINT?$QUERY_STRING" -H "X-Api-Key: $API_KEY")
           uuid=$(echo "$response" | jq -r '.uuid')
- 
+
           if [[ -z "$uuid" ]]; then 
               uuid=""
               touch existing_sbom.json
           else
-              # API request to retrieve the existing SBOM
-              curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
+            # API request to retrieve the existing SBOM
+            curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json
           fi
 
           echo "UUID: $uuid" 
+
      
       - name: Combine SBOMs
         run: |
