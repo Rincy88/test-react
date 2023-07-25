@@ -91,20 +91,12 @@ jobs:
             "bom": "$encoded_sbom"
           }
           EOF
-            fi
-
-          #cat << EOF > "$payloadfile"
-          #{
-           # "project": "${uuid}",
-           # "autoCreate":true,
-           # "bom": "$encoded_sbom"
-          #}
-          #EOF
+            fi 
           
           # API request to upload the aggregated SBOM to Dependency Track
-          curl -k -X PUT "$API_ENDPOINT/bom" \
+          curl -k -X PUT "https://dt-api.staging.cryptosoft.com/api/v1/bom" \
             -H "Content-Type: application/json" \
-            -H "X-Api-Key: $API_KEY" \
+            -H "X-Api-Key: 1DMIXAnGtTIeTQDddlHSvpj6d3as174S" \
             -d @"$payloadfile"
 
       - name: Cleanup
