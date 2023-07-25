@@ -45,7 +45,7 @@ jobs:
           uuid=$(echo "$response" | jq -r '.uuid')
           echo "UUID: $uuid" 
           # API request to retrieve the existing SBOM
-          curl -k -X GET -H "X-Api-Key: $API_KEY" "$API_ENDPOINT/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json| jq '.'
+          curl -k -X GET -H "X-Api-Key: $API_KEY" "https://dt-api.staging.cryptosoft.com/api/v1/bom/cyclonedx/project/${uuid}?format=json&variant=withVulnerabilities&download=true" > existing_sbom.json| jq '.'
           else
               uuid=""
                echo '{}' > existing_sbom.json
